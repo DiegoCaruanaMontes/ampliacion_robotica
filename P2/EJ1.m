@@ -11,7 +11,7 @@ tsim = 1; %salto en la simulación
 trayectoria = [0 0;20 0;20 20;-10 30;-20 -10;0 -30;0 0];
 
 % Probar varios valores de ganancia (Controlador P)
-G = [1 2 3];
+G = 0.1;
 
 % Inicializar variables
 x = 0;
@@ -33,7 +33,7 @@ for j=2:size(trayectoria,1) % Each point in the trayectory
     while d>epsilon
         % Calcular w con control proporcional
         vector = p-[x y];
-        d = norm(vector);
+        d = norm(vector)
         theta_r = atan2(vector(2),vector(1));
         theta_g = theta_r-theta;
         w = G*theta_g;
@@ -42,7 +42,7 @@ for j=2:size(trayectoria,1) % Each point in the trayectory
         [wi,wd] = MCI2(v,w,K,R);
 
         % Simulate a step
-        [dx,dy,dtheta] = step(wi, wd, tsim, Tm, theta);
+        [dx,dy,dtheta] = step(wi, wd, tsim, Tm, theta)
 
         % Recalculate position
         x = x+dx; 
@@ -57,10 +57,10 @@ for j=2:size(trayectoria,1) % Each point in the trayectory
         v_hist = [v_hist, v];
 
         % Add noise
-        pos = DGPS(x,y,theta);
-        x = pos(1);
-        y = pos(2);
-        theta = pos(3);
+        %pos = DGPS(x,y,theta);
+        %x = pos(1);
+        %y = pos(2);
+        %theta = pos(3);
     end
 end
 
