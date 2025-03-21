@@ -25,35 +25,24 @@ timer = 0;
 G = 1;
 
 % Inicializar variables
-x = 0;
-y = 0;
+x = 1;
+y = 5;
 theta = 0;
-x_real = 0;
-y_real = 0;
+x_real = 1;
+y_real = 5;
 theta_real = 0;
-contornox = [0 a a 0 0];
-cortornoy = [0 0 b b 0];
+contorno_x = [0 a a 0 0];
+contorno_y = [0 0 b b 0];
 d = 1000;
 wi_ant = 0;
 wd_ant = 0;
 
+dx = 1;
+dy = 0;
+
 p = puntos_pasillo(1, :);
-d = norm(p - [x y])
 while true
     % Calcular w con control proporcional
-    rangos= laser2D(contornox, contornoy, x, y, phi)
-
-    dist_mpm = (rangos(18)+rangos(54))/2; % distancia media paredes medida
-    dist_mp = b/2; % distancia media de la pared
-    theta = arccos(dist_mp, dist_mpm);
-    if rangos(17) > rangos(18) %Está a la derecha
-        theta = -theta;
-    end
-    
-    dl = (cos(theta)*rangos(18))-(b/2);
-    
-    dx = dl*sin(theta)+d*cos(theta);
-    dy = dl*cos(theta)-d*sin(theta);
     vector = [dx dy];
     d = norm(vector);
 
@@ -65,7 +54,7 @@ while true
     [wi,wd] = MCI2(v,w,K,R);
 
     % Simulate a step
-    [dx,dy,dtheta] = step(wi, wi_ant, wd, wd_ant, tsim, Tm,theta, R, K, v_max);
+    [dx,dy,dtheta] = step(wi, wi_ant, wd, wd_ant, tsim, Tm,theta_real, R, K, v_max);
     timer = timer + tsim;
 
     % Recalculate position
@@ -74,9 +63,24 @@ while true
     theta_real = theta_real+dtheta;
 
     % Crear variables intermedias x',y',z' para la pose real del robot
+    if timer/T>1
+        timer = mod(timer,T);
+        rangos= laser2D(contorno_x, contorno_y, x_real, y_real, theta_real);
+
+        dist_mpm = (rangos(18)+rangos(54))/2 % distancia media paredes medida
+        dist_mp = b/2; % distancia media de la pared
+        rate = dist_mp/dist_mpm;
+        theta = acos(dist_mp/dist_mpm);
+        if rangos(17) > rangos(18) %Está a la derecha
+            theta = -theta;
+        end
+        
+        dl = (cos(theta)*rangos(18))-(b/2);
+        
+        dx = dl*sin(theta)+d*cos(theta);
+        dy = dl*cos(theta)-d*sin(theta);
+    end
 
     wi_ant = wi;
     wd_ant = wd;
-
-    end
 end
