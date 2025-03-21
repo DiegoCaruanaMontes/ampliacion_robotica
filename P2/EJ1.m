@@ -1,4 +1,7 @@
 % Modelo P1
+clc
+close
+
 R = 0.1;
 K = 0.4;
 
@@ -12,7 +15,7 @@ tsim = 0.1; %salto en la simulación
 trayectoria = [0 0;20 0;20 20;-10 30;-20 -10;0 -30;0 0];
 
 % Probar varios valores de ganancia (Controlador P)
-G = 0.1;
+G = 1;
 
 % Inicializar variables
 x = 0;
@@ -38,8 +41,11 @@ for j=2:size(trayectoria,1) % Each point in the trayectory
         % Calcular w con control proporcional
         vector = p-[x y]
         d = norm(vector);
+        %if d>100
+        %    break;
+        %end
         theta_r = atan2(vector(2),vector(1));
-        theta_g = theta_r-theta;
+        theta_g = mod(theta_r-theta,2*pi);
         w = G*theta_g;
 
         % MCI
