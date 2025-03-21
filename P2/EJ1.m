@@ -1,12 +1,12 @@
 % Modelo P1
 clc
-close
+close all
 
 R = 0.1;
 K = 0.4;
 
 v = 1.2; % constante
-dmin = 20; % Separación mínima entre puntos
+%dmin = 20; % Separación mínima entre puntos
 T = 0.3; % Tiempo de muestreo GPS
 epsilon = 1; % Distancia de alcance al waypoint
 Tm= 0.12; %Constante de tiempo
@@ -23,6 +23,11 @@ G = 1;
 x = 0;
 y = 0;
 theta = 0;
+
+x_real = 0;
+y_real = 0;
+theta_real = 0;
+
 d = 1000;
 wi_ant = 0;
 wd_ant = 0;
@@ -37,15 +42,15 @@ v_hist = [];
 
 
 for j=2:size(trayectoria,1) % Each point in the trayectory
-    p = trayectoria(j,:)
-    d = norm(p - [x y])
+    p = trayectoria(j,:);
+    d = norm(p - [x y]);
     while d>epsilon
         % Calcular w con control proporcional
-        vector = p-[x y]
+        vector = p-[x y];
         d = norm(vector);
-        %if d>100
-        %    break;
-        %end
+        if d>100
+            break;
+        end
         theta_r = atan2(vector(2),vector(1));
         theta_g = mod(theta_r-theta,2*pi);
         w = G*theta_g;
@@ -58,17 +63,17 @@ for j=2:size(trayectoria,1) % Each point in the trayectory
         timer = timer + tsim;
 
         % Recalculate position
-        %x = x+dx; 
-        %y = y+dy;
-        %theta = theta+dtheta;
+        x_real = x_real+dx; 
+        y_real = y_real+dy;
+        theta_real = theta_real+dtheta;
 
         % Crear variables intermedias x',y',z' para la pose real del robot
         % y la actualización del GPS
 
         % Add noise
-        if mod(timer,T)>1
-            timer = timer-T;
-            pos = DGPS(x,y,theta);
+        if timer/T>1
+            timer = mod(timer,T);
+            pos = DGPS(x_real,y_real,theta_real);
             x = pos(1);
             y = pos(2);
             theta = pos(3);
@@ -78,9 +83,9 @@ for j=2:size(trayectoria,1) % Each point in the trayectory
         wd_ant = wd;
 
         % Guardar datos para la gráfica
-        x_hist = [x_hist, x];
-        y_hist = [y_hist, y];
-        theta_hist = [theta_hist, theta];
+        x_hist = [x_hist, x_real];
+        y_hist = [y_hist, y_real];
+        theta_hist = [theta_hist, theta_real];
         w_hist = [w_hist, w];
         v_hist = [v_hist, v];
 
