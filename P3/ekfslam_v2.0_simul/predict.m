@@ -23,8 +23,8 @@ vts= v*dt*s; vtc= v*dt*c;
 % PON AQUI TU CODIGO
 % calcular e incluir los jacobianos de prediccion (vehiculo)
 % jacobians   
-Gv= [];
-Gu= [];
+Gv= [1 0 -vts;0 1 vtc;0 0 1];
+Gu= [dt*c -vts;dt*s -vtc;dt*s/WB v*dt*cos(g)/WB];
   
 % predict covariance
 PX(1:3,1:3)= Gv*PX(1:3,1:3)*Gv' + Gu*Q*Gu';
