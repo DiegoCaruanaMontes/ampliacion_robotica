@@ -14,6 +14,8 @@ v_max = 15; %velocidad máxima
 tsim = 0.1; %salto en la simulación
 trayectoria = [0 0;20 0;20 20;-10 30;-20 -10;0 -30;0 0];
 
+timer = 0;
+
 % Probar varios valores de ganancia (Controlador P)
 G = 1;
 
@@ -53,11 +55,25 @@ for j=2:size(trayectoria,1) % Each point in the trayectory
 
         % Simulate a step
         [dx,dy,dtheta] = step(wi, wi_ant, wd, wd_ant, tsim, Tm,theta, R, K, v_max);
-        
+        timer = timer + tsim;
+
         % Recalculate position
-        x = x+dx; 
-        y = y+dy;
-        theta = theta+dtheta;
+        %x = x+dx; 
+        %y = y+dy;
+        %theta = theta+dtheta;
+
+        % Crear variables intermedias x',y',z' para la pose real del robot
+        % y la actualización del GPS
+
+        % Add noise
+        if mod(timer,T)>1
+            timer = timer-T;
+            pos = DGPS(x,y,theta);
+            x = pos(1);
+            y = pos(2);
+            theta = pos(3);
+        end
+        
         wi_ant = wi;
         wd_ant = wd;
 
@@ -68,11 +84,7 @@ for j=2:size(trayectoria,1) % Each point in the trayectory
         w_hist = [w_hist, w];
         v_hist = [v_hist, v];
 
-        % Add noise
-        %pos = DGPS(x,y,theta);
-        %x = pos(1);
-        %y = pos(2);
-        %theta = pos(3);
+        
         
     end
 end
