@@ -20,4 +20,12 @@ figure
 
 dibujaBarrido(x, y, 0, 0, 0, rangos);
 
+% rangos(1) apunta al frente. Al aumentar "i", se gira en sentido
+% antihorario
+% 90º -> 18 (izquierda)
+% 270º -> 54 (derecha)
+
+%while not(x>a || x<0 || y>b || y<0)
+% Asumir que la ganancia de giro es lo suficientemente baja para que el
+% robot no de media vuelta
 
