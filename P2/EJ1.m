@@ -1,13 +1,14 @@
 % Modelo P1
-R = 0;
-K = 0;
+R = 0.1;
+K = 0.4;
 
 v = 1.2; % constante
 dmin = 20; % Separación mínima entre puntos
 T = 0.3; % Tiempo de muestreo GPS
 epsilon = 1; % Distancia de alcance al waypoint
 Tm= 0.12; %Constante de tiempo
-tsim = 1; %salto en la simulación
+v_max = 15; %velocidad máxima
+tsim = 0.1; %salto en la simulación
 trayectoria = [0 0;20 0;20 20;-10 30;-20 -10;0 -30;0 0];
 
 % Probar varios valores de ganancia (Controlador P)
@@ -18,6 +19,9 @@ x = 0;
 y = 0;
 theta = 0;
 d = 1000;
+wi_ant = 0;
+wd_ant = 0;
+j_ant = 0;
 
 % Vectores para guardar la trayectoria recorrida
 x_hist = [];
@@ -28,12 +32,12 @@ v_hist = [];
 
 
 for j=2:size(trayectoria,1) % Each point in the trayectory
-    p = trayectoria(j,:);
-    % Go to point until d<epsilon
+    p = trayectoria(j,:)
+    d = norm(p - [x y])
     while d>epsilon
         % Calcular w con control proporcional
-        vector = p-[x y];
-        d = norm(vector)
+        vector = p-[x y]
+        d = norm(vector);
         theta_r = atan2(vector(2),vector(1));
         theta_g = theta_r-theta;
         w = G*theta_g;
@@ -42,12 +46,14 @@ for j=2:size(trayectoria,1) % Each point in the trayectory
         [wi,wd] = MCI2(v,w,K,R);
 
         % Simulate a step
-        [dx,dy,dtheta] = step(wi, wd, tsim, Tm, theta)
-
+        [dx,dy,dtheta] = step(wi, wi_ant, wd, wd_ant, tsim, Tm,theta, R, K, v_max);
+        
         % Recalculate position
         x = x+dx; 
         y = y+dy;
         theta = theta+dtheta;
+        wi_ant = wi;
+        wd_ant = wd;
 
         % Guardar datos para la gráfica
         x_hist = [x_hist, x];
@@ -61,6 +67,7 @@ for j=2:size(trayectoria,1) % Each point in the trayectory
         %x = pos(1);
         %y = pos(2);
         %theta = pos(3);
+        
     end
 end
 
