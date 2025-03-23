@@ -27,9 +27,9 @@ angulos=-pi/2:(pi/180):pi/2; % resolucion angular barrido laser
 
 % Caracteristicas del vehiculo y parametros del metodo
 v=0.4;            % Velocidad del robot
-D=1.5;           % Rango del efecto del campo de repulsión de los obstáculos
-alfa=1;           % Coeficiente de la componente de atracción
-beta=100;      % Coeficiente de la componente de repulsión
+D=5;%1.5           % Rango del efecto del campo de repulsión de los obstáculos
+alfa=3;%1           % Coeficiente de la componente de atracción
+beta=300;%100      % Coeficiente de la componente de repulsión
 
 %% Inicialización
 
@@ -65,10 +65,9 @@ while norm(destino-robot(1:2)) > v && iteracion<1000    % Hasta menos de una ite
     
     % Mover al robot en la dirección de la fuerza
     F_total = F_total/norm(F_total);% Normalizo el vector
-    delta_pose = F_total*v;
-    robot = robot + [delta_pose 0];
-
-   
+    delta_pos = F_total*v;
+    delta_theta = atan2(F_total(2),F_total(1));
+    robot = robot + [delta_pos delta_theta];
 
     path = [path;robot];	% Se añade la nueva posición al camino seguido
     plot(path(:,1),path(:,2),'r');
