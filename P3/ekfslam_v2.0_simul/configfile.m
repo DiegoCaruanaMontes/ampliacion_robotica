@@ -10,8 +10,8 @@ WHEELBASE= 4; % metres, vehicle wheel-base
 DT_CONTROLS= 0.025; % seconds, time interval between control signals
 
 % control noises
-sigmaV= 0.3; % m/s
-sigmaG= (3.0*pi/180); % radians
+sigmaV= 0.3;%0.3 % m/s
+sigmaG= (3.0*pi/180);%(3.0*pi/180) % radians
 Q= [sigmaV^2 0; 0 sigmaG^2];
 
 % observation parameters
@@ -19,8 +19,8 @@ MAX_RANGE= 30.0; % metres
 DT_OBSERVE= 8*DT_CONTROLS; % seconds, time interval between observations
 
 % observation noises
-sigmaR= 0.1; % metres
-sigmaB= (1.0*pi/180); % radians
+sigmaR= 0.1;%0.1 % metres
+sigmaB= (10*pi/180);%(1.0*pi/180) % radians
 R= [sigmaR^2 0; 0 sigmaB^2];
 
 % data association innovation gates (Mahalanobis distances)
