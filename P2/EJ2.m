@@ -22,7 +22,7 @@ puntos_pasillo = [0 0;a 0;a b;0 b;0 0];
 timer = 0;
 
 % Probar varios valores de ganancia (Controlador P)
-G = 1;
+G = 0.1;
 
 % Inicializar variables
 
@@ -93,23 +93,26 @@ while (x_real>=0 && x_real<a && y_real>=0 && y_real<(b))
         delta_y = dl*cos(theta)-d*sin(theta);
     end
     if x<0
-            x = 1;
+       x = 1;
     end
     wi_ant = wi;
     wd_ant = wd;
-    figure;
-    hold on;
-    plot(contorno_x, contorno_y, 'k', 'LineWidth', 3); % Pasillo
-    plot(trayectoria_x, trayectoria_y, 'b', 'LineWidth', 2); % Trayectoria del robot
-    scatter(trayectoria_x(1), trayectoria_y(1), 50, 'g', 'filled'); % Punto inicial
-    scatter(trayectoria_x(end), trayectoria_y(end), 50, 'r', 'filled'); % Punto final
-    xlabel('X (m)');
-    ylabel('Y (m)');
-    title('Trayectoria del Robot en el Pasillo');
-    grid on;
-    axis equal;
-    legend('Pasillo', 'Trayectoria', 'Inicio', 'Fin');
-    hold off;
-end
+
 
 % Graficar el contorno del pasillo y la trayectoria del robot
+
+
+figure;
+hold on;
+plot(contorno_x, contorno_y, 'k', 'LineWidth', 3); % Pasillo
+plot(trayectoria_x, trayectoria_y, 'b', 'LineWidth', 2); % Trayectoria del robot
+scatter(trayectoria_x(1), trayectoria_y(1), 50, 'g', 'filled'); % Punto inicial
+scatter(trayectoria_x(end), trayectoria_y(end), 50, 'r', 'filled'); % Punto final
+xlabel('X (m)');
+ylabel('Y (m)');
+title('Trayectoria del Robot en el Pasillo');
+grid on;
+axis equal;
+legend('Pasillo', 'Trayectoria', 'Inicio', 'Fin');
+hold off;
+end

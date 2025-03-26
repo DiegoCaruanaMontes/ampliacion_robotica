@@ -18,7 +18,7 @@ orient(orient<-pi)= orient(orient<-pi)+2*pi;
 % Cálculo de distancias
 %rangos = ones(length(orient))*100 % LINEA AÑADIDA POR LOS ALUMNOS PORQUE DA ERROR
 for k=1:length(orient)
-    rangos(k)= laser1D(x,y,phi,rho,x0,y0,orient(k));
+    rangos(k)=laser1D(x,y,phi,rho,x0,y0,orient(k));
 end
 
 end

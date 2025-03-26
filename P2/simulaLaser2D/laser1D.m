@@ -4,7 +4,7 @@ function rango= laser1D(x, y, phi, rho, x0, y0, phi0)
 % phi, rho: parámetros de las rectas el entorno
 % x0, y0, phi0: posición y orientación del láser
 
-    tol=1e-3;
+    tol=1e-3;%1e-3
     
     % Parámetro del rayo laser
     rho0=x0*cos(phi0)+y0*sin(phi0);
