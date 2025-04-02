@@ -26,7 +26,7 @@ G = 0.1;
 
 % Inicializar variables
 
-x_real = 1;
+x_real = 5;
 y_real = 5;
 theta_real = 0;
 
@@ -75,7 +75,8 @@ while (x_real>=0 && x_real<a && y_real>=0 && y_real<(b))
     if timer/T>1
         timer = mod(timer,T);
         rangos= laser2D(contorno_x, contorno_y, x_real, y_real, theta_real);
-
+        d = dibujaBarrido(contorno_x, contorno_y, x_real, y_real, theta_real, rangos);
+        % ...
         dist_mpm = (rangos(18)+rangos(54))/2; % distancia media paredes medida
         dist_mp = b/2; % distancia media de la pared
         rate = dist_mp/dist_mpm;
@@ -99,9 +100,7 @@ while (x_real>=0 && x_real<a && y_real>=0 && y_real<(b))
     wd_ant = wd;
 
 
-% Graficar el contorno del pasillo y la trayectoria del robot
-
-
+close
 figure;
 hold on;
 plot(contorno_x, contorno_y, 'k', 'LineWidth', 3); % Pasillo
@@ -115,4 +114,6 @@ grid on;
 axis equal;
 legend('Pasillo', 'Trayectoria', 'Inicio', 'Fin');
 hold off;
+
 end
+% Graficar el contorno del pasillo y la trayectoria del robot

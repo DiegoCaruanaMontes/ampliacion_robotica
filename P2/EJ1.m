@@ -46,7 +46,7 @@ for j=2:size(trayectoria,1) % Each point in the trayectory
     d = norm(p - [x y]);
     while d>epsilon
         % Calcular w con control proporcional
-        vector = p-[x y];
+        vector = p-[x y];% globales-> mejor locales
         d = norm(vector);
         if d>100
             break;
