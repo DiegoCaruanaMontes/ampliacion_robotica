@@ -1,0 +1,307 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      -->
+<title>P4</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2025-03-23">
+<meta name="DC.source" content="P4.m">
+<style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style>
+</head>
+<body>
+<div class="content">
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<a href="#2">Carga del mapa de ocupacion</a>
+</li>
+<li>
+<a href="#3">Inicializaci&oacute;n</a>
+</li>
+<li>
+<a href="#4">Calculo de la trayectoria</a>
+</li>
+<li>
+<a href="#5">funcion para simular el sensor</a>
+</li>
+</ul>
+</div>
+<pre class="codeinput">
+<span class="comment">% AMPLIACION DE ROBOTICA</span>
+<span class="comment">% PRACTICA 4: Navegacion local con campos potenciales</span>
+<span class="comment">% Evitar obstaculos</span>
+
+clc
+clearvars
+close <span class="string">all</span>
+</pre>
+<h2 id="2">Carga del mapa de ocupacion</h2>
+<pre class="codeinput">map_img=imread(<span class="string">'mapa1_150.png'</span>);
+map_neg=imcomplement(map_img);
+map_bin=imbinarize(map_neg);
+mapa=binaryOccupancyMap(map_bin);
+show(mapa);
+
+<span class="comment">% Marcar los puntos de inicio y destino</span>
+hold <span class="string">on</span>;
+title(<span class="string">'Se&ntilde;ala los puntos inicial y final de la trayectoria del robot'</span>);
+origen=ginput(1);
+plot(origen(1), origen(2), <span class="string">'go'</span>,<span class="string">'MarkerFaceColor'</span>,<span class="string">'green'</span>);  <span class="comment">% Dibujamos el origen</span>
+destino=ginput(1);
+plot(destino(1), destino(2), <span class="string">'ro'</span>,<span class="string">'MarkerFaceColor'</span>,<span class="string">'red'</span>);  <span class="comment">% Dibujamos el destino</span>
+
+<span class="comment">% Configuracion del sensor (laser de barrido)</span>
+max_rango=10;
+angulos=-pi/2:(pi/180):pi/2; <span class="comment">% resolucion angular barrido laser</span>
+
+<span class="comment">% Caracteristicas del vehiculo y parametros del metodo</span>
+v=0.4;            <span class="comment">% Velocidad del robot</span>
+D=1.5;           <span class="comment">% Rango del efecto del campo de repulsi&oacute;n de los obst&aacute;culos</span>
+alfa=1;           <span class="comment">% Coeficiente de la componente de atracci&oacute;n</span>
+beta=100;      <span class="comment">% Coeficiente de la componente de repulsi&oacute;n</span>
+</pre>
+<pre class="codeoutput error">Error using ginput
+Interrupted by figure deletion
+
+Error in P4 (line 19)
+origen=ginput(1);
+</pre>
+<h2 id="3">Inicializaci&oacute;n</h2>
+<pre class="codeinput">robot=[origen 0];     <span class="comment">% El robot empieza en la posici&oacute;n de origen (orientacion cero)</span>
+path = [];                 <span class="comment">% Se almacena el camino recorrido</span>
+path = [path; robot]; <span class="comment">% Se a&ntilde;ade al camino la posicion actual del robot</span>
+iteracion=0;              <span class="comment">% Se controla el n&ordm; de iteraciones por si se entra en un minimo local</span>
+</pre>
+<h2 id="4">Calculo de la trayectoria</h2>
+<pre class="codeinput">
+<span class="keyword">while</span> norm(destino-robot(1:2)) &gt; v &amp;&amp; iteracion&lt;1000    <span class="comment">% Hasta menos de una iteraci&oacute;n de la meta (10 cm)</span>
+   <span class="comment">% TU CODIGO AQUI %%%%%%%%%%%%%</span>
+
+    F_total = 0;
+    obs = SimulaLidar(robot,mapa,angulos,max_rango);
+
+    F_atr = alfa*(destino-robot(1:2));
+
+    S = size(obs,1);
+    F_rep = zeros(S,2);
+    <span class="keyword">for</span> j = 1:1:S
+        <span class="keyword">if</span> ~isnan(obs(j))
+            rho_obs = norm(obs(j,:)-robot(1:2));
+            <span class="keyword">if</span> rho_obs &lt;= D
+                F_rep(j,:) = beta*(1/rho_obs-1/D)*(robot(1:2)-obs(j,:))/rho_obs^3;
+            <span class="keyword">elseif</span> rho_obs &gt; D
+                F_rep(j,:) = [0 0];
+            <span class="keyword">end</span>
+            F_total = F_total + F_rep(j,:);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    F_total = F_total + F_atr;
+
+    <span class="comment">% Mover al robot en la direcci&oacute;n de la fuerza</span>
+    F_total = F_total/norm(F_total);<span class="comment">% Normalizo el vector</span>
+    delta_pose = F_total*v;
+    robot = robot + [delta_pose 0];
+
+    path = [path;robot];	<span class="comment">% Se a&ntilde;ade la nueva posici&oacute;n al camino seguido</span>
+    plot(path(:,1),path(:,2),<span class="string">'r'</span>);
+    drawnow
+
+    iteracion=iteracion+1;
+<span class="keyword">end</span>
+
+<span class="keyword">if</span> iteracion==1000   <span class="comment">% Se ha ca&iacute;do en un m&iacute;nimo local</span>
+    fprintf(<span class="string">'No se ha podido llegar al destino.\n'</span>)
+<span class="keyword">else</span>
+    fprintf(<span class="string">'Destino alcanzado.\n'</span>)
+<span class="keyword">end</span>
+</pre>
+<h2 id="5">funcion para simular el sensor</h2>
+<pre class="codeinput">
+<span class="keyword">function</span> [obs]=SimulaLidar(robot, mapa, angulos, max_rango)
+    obs=rayIntersection(mapa,robot,angulos, max_rango);
+    <span class="comment">% plot(obs(:,1),obs(:,2),'*r') % Puntos de interseccion lidar</span>
+    <span class="comment">% plot(robot(1),robot(2),'ob') % Posicion del robot</span>
+    <span class="comment">% for i = 1:length(angulos)</span>
+    <span class="comment">%     plot([robot(1),obs(i,1)],...</span>
+    <span class="comment">%         [robot(2),obs(i,2)],'-b') % Rayos de interseccion</span>
+    <span class="comment">% end</span>
+    <span class="comment">% % plot([robot(1),robot(1)-6*sin(angulos(4))],...</span>
+    <span class="comment">% %     [robot(2),robot(2)+6*cos(angulos(4))],'-b') % Rayos fuera de</span>
+    <span class="comment">% %     rango</span>
+<span class="keyword">end</span>
+</pre>
+<p class="footer">
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a>
+<br>
+</p>
+</div>
+<!--
+##### SOURCE BEGIN #####
+% AMPLIACION DE ROBOTICA
+% PRACTICA 4: Navegacion local con campos potenciales
+% Evitar obstaculos
+
+clc
+clearvars
+close all
+%% Carga del mapa de ocupacion
+
+map_img=imread('mapa1_150.png');
+map_neg=imcomplement(map_img);
+map_bin=imbinarize(map_neg);
+mapa=binaryOccupancyMap(map_bin);
+show(mapa);
+
+% Marcar los puntos de inicio y destino
+hold on;
+title('Señala los puntos inicial y final de la trayectoria del robot');
+origen=ginput(1);
+plot(origen(1), origen(2), 'go','MarkerFaceColor','green');  % Dibujamos el origen
+destino=ginput(1);
+plot(destino(1), destino(2), 'ro','MarkerFaceColor','red');  % Dibujamos el destino
+
+% Configuracion del sensor (laser de barrido)
+max_rango=10;
+angulos=-pi/2:(pi/180):pi/2; % resolucion angular barrido laser
+
+% Caracteristicas del vehiculo y parametros del metodo
+v=0.4;            % Velocidad del robot
+D=1.5;           % Rango del efecto del campo de repulsión de los obstáculos
+alfa=1;           % Coeficiente de la componente de atracción
+beta=100;      % Coeficiente de la componente de repulsión
+
+%% Inicialización
+
+robot=[origen 0];     % El robot empieza en la posición de origen (orientacion cero)
+path = [];                 % Se almacena el camino recorrido
+path = [path; robot]; % Se añade al camino la posicion actual del robot
+iteracion=0;              % Se controla el nº de iteraciones por si se entra en un minimo local
+
+%% Calculo de la trayectoria
+
+while norm(destino-robot(1:2)) > v && iteracion<1000    % Hasta menos de una iteración de la meta (10 cm)
+   % TU CODIGO AQUI %%%%%%%%%%%%%
+
+    F_total = 0;
+    obs = SimulaLidar(robot,mapa,angulos,max_rango);
+
+    F_atr = alfa*(destino-robot(1:2));
+    
+    S = size(obs,1);
+    F_rep = zeros(S,2);
+    for j = 1:1:S
+        if ~isnan(obs(j))
+            rho_obs = norm(obs(j,:)-robot(1:2));
+            if rho_obs <= D
+                F_rep(j,:) = beta*(1/rho_obs-1/D)*(robot(1:2)-obs(j,:))/rho_obs^3;
+            elseif rho_obs > D
+                F_rep(j,:) = [0 0];
+            end
+            F_total = F_total + F_rep(j,:);
+        end
+    end
+    F_total = F_total + F_atr;
+    
+    % Mover al robot en la dirección de la fuerza
+    F_total = F_total/norm(F_total);% Normalizo el vector
+    delta_pose = F_total*v;
+    robot = robot + [delta_pose 0];
+
+    path = [path;robot];	% Se añade la nueva posición al camino seguido
+    plot(path(:,1),path(:,2),'r');
+    drawnow
+
+    iteracion=iteracion+1;
+end
+
+if iteracion==1000   % Se ha caído en un mínimo local
+    fprintf('No se ha podido llegar al destino.\n')
+else
+    fprintf('Destino alcanzado.\n')
+end
+
+%% funcion para simular el sensor
+function [obs]=SimulaLidar(robot, mapa, angulos, max_rango)
+    obs=rayIntersection(mapa,robot,angulos, max_rango);
+    % plot(obs(:,1),obs(:,2),'*r') % Puntos de interseccion lidar
+    % plot(robot(1),robot(2),'ob') % Posicion del robot
+    % for i = 1:length(angulos)
+    %     plot([robot(1),obs(i,1)],...
+    %         [robot(2),obs(i,2)],'-b') % Rayos de interseccion
+    % end
+    % % plot([robot(1),robot(1)-6*sin(angulos(4))],...
+    % %     [robot(2),robot(2)+6*cos(angulos(4))],'-b') % Rayos fuera de
+    % %     rango
+end
+##### SOURCE END #####
+-->
+</body>
+</html>
