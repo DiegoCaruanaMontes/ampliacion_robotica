@@ -44,8 +44,9 @@ classdef DiffVehicle
             v = zeros(1,n);
             w = zeros(1,n);
 
-            for i = 2:n
+            for i = 2:1:n
                 [x(i), y(i), theta(i), wi(i), wd(i), v(i), w(i)] = obj.step(x(i-1), y(i-1), theta(i-1), wi(i-1), wd(i-1), wid, wdd, t);
+                %obj.step(x(i-1), y(i-1), theta(i-1), wi(i-1), wd(i-1), wid, wdd, t)
             end
         end
 
@@ -73,15 +74,13 @@ classdef DiffVehicle
             
             % Calcular velocidades angulares
             wi = obj.motor_i.get_w(wi0, wid, t);
-            wd = obj.motor_i.get_w(wd0, wdd, t);
+            wd = obj.motor_d.get_w(wd0, wdd, t);
 
             % Modelo cinemático directo
             [v, w] = obj.mcd(wi, wd);
 
             % Odometría
             [x, y, theta] = obj.odom(v, w, x0, y0, theta0, t);
-
-            %disp([x, y, theta, wi, wd, v, w])
             
         end
 
@@ -125,7 +124,7 @@ classdef DiffVehicle
         end
 
 
-        function plot(obj, x, y, theta)
+        function plot(obj, x, y, theta, t)
             % Dibuja los resultados de la función obj.simulate. Dibuja un
             % plano XY con la trayectoria del robot, y un gráfico temporal
             % con la orientación del mismo.
@@ -134,17 +133,26 @@ classdef DiffVehicle
             % x: vector de posiciones en el eje x global
             % y: vector de posiciones en el eje y global
             % theta: vector de ángulos en el sistema de referencia global
+            % t: tiempo de muestreo
 
             % XY plot
             figure
             plot(x, y);
-            xlabel('Posición en X');
-            ylabel('Posición en Y');
-            title('Trayectoria del Robot');
+            xlabel('Posición en X (m)');
+            ylabel('Posición en Y (m)');
+            title('Trayectoria del Vehículo');
             grid on;
             axis equal;
 
             % THETA plot
+            t_data = (0:1:length(theta)-1)*t;
+            figure
+            plot(t_data, theta);
+            xlabel('Tiempo (s)');
+            ylabel('Theta (rad)');
+            title('Orientación del Vehículo');
+            grid on;
+            axis equal;
         end
     end
 end

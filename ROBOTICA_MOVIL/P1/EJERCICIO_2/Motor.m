@@ -7,10 +7,11 @@ classdef Motor
     end
     
     methods
-        function obj = Motor(Tw, v_max)
+        function obj = Motor(Tw, w_max)
             %Constructor
             % Tw: constante de tiempo del sistema de primer orden
             obj.a = 1/Tw;
+            obj.w_max = w_max;
         end
        
         function w = get_w(obj, w0, wd, t)
