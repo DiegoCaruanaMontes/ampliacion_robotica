@@ -10,8 +10,6 @@ function [pr,qr]=qpinter(Pa,Pb,lambda)
     QB = tr2q(RB,1);
     QC = qqmul(qinv(QA),QB);
     
-
-       
     % Interpolate the position
     % [x;y;z]
     
@@ -29,6 +27,5 @@ function [pr,qr]=qpinter(Pa,Pb,lambda)
     
     Qrot = [wrot, vrot];%ecuación 5
 
-    qr = qqmul(QA, Qrot) %ecuación 6
-
+    qr = qqmul(QA, Qrot); %ecuación 6
 end
