@@ -40,7 +40,7 @@ iteracion=0;              % Se controla el nº de iteraciones por si se entra en
 
 %% Calculo de la trayectoria
 
-while norm(destino-robot(1:2)) > v && iteracion<1000    % Hasta menos de una iteración de la meta (10 cm)
+while norm(destino-robot(1:2)) > v && iteracion<1000    % Hasta menos de una iteracion de la meta (10 cm)
    % TU CODIGO AQUI %%%%%%%%%%%%%
 
     F_total = 0;
@@ -63,20 +63,20 @@ while norm(destino-robot(1:2)) > v && iteracion<1000    % Hasta menos de una ite
     end
     F_total = F_total + F_atr;
     
-    % Mover al robot en la dirección de la fuerza
+    % Mover al robot en la direccion de la fuerza
     F_total = F_total/norm(F_total);% Normalizo el vector
     delta_pos = F_total*v;
     delta_theta = atan2(F_total(2),F_total(1));
     robot = robot + [delta_pos delta_theta];
 
-    path = [path;robot];	% Se añade la nueva posición al camino seguido
+    path = [path;robot];	% Se añade la nueva posicion al camino seguido
     plot(path(:,1),path(:,2),'r');
     drawnow
 
     iteracion=iteracion+1;
 end
 
-if iteracion==1000   % Se ha caído en un mínimo local
+if iteracion==1000   % Se ha caido en un mínimo local
     fprintf('No se ha podido llegar al destino.\n')
 else
     fprintf('Destino alcanzado.\n')

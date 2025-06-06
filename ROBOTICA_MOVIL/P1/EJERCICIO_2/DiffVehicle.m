@@ -1,4 +1,5 @@
 classdef DiffVehicle
+    % Representación de un vehículo diferencial
     
     properties
         d       double % Distancia entre ruedas (m)
